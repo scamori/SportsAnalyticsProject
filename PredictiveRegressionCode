@@ -1,0 +1,29 @@
+#Upload data into R
+Predictive.Model.Data1 <- read.csv("C:/Users/Karin/Desktop/Predictive Model Data1.csv")
+View(Predictive.Model.Data1)
+
+#Select attributes to input into model
+selected.var <- c(5, 10, 14, 22, 28, 30)
+
+#Partition data into training and validation sets
+train.index <- sample(c(1:36), 18)
+train.df <- Predictive.Model.Data1[train.index, selected.var]
+valid.df <- Predictive.Model.Data1[-train.index, selected.var]
+
+#Generate multiple linear regression with training data
+model1 <- lm(Points ~ ., data=train.df)
+summary(model1)
+
+#Calculate RMSE to measure error
+library(forecast)
+model1.pred <- predict(model1, valid.df)
+accuracy(model1.pred, valid.df$Points)
+
+#Make second model using just the most influential inputs in Model 1
+model2 <- lm(Points ~ 28, data=train.df)
+summary(model2)
+
+#Calculate RMSE to measure error
+model2.pred <- predict(model2, valid.df)
+accuracy(model2.pred, valid.df$Points)
+
